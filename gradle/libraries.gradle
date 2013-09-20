@@ -1,0 +1,18 @@
+repositories {
+    mavenCentral()
+}
+
+ext {
+    libraries = [
+        spock: [
+            dependencies.create('org.spockframework:spock-core:0.7-groovy-1.8') {
+                exclude module: 'groovy-all'
+                exclude module: 'junit-dep'
+            },
+            dependencies.create('cglib:cglib-nodep:2.2.2'),
+            dependencies.create('org.objenesis:objenesis:1.2'),
+        ],
+
+        junit: dependencies.create('junit:junit:latest.released'),
+    ]
+}

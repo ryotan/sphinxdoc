@@ -1,0 +1,11 @@
+apply {
+    from script('groovy')
+}
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+
+    testCompile libraries.junit
+    testCompile libraries.spock
+}

@@ -1,0 +1,13 @@
+apply plugin: 'groovy'
+
+// ファイルエンコーディングをext.encodingの値にする。
+tasks.with {
+    withType(JavaCompile) {
+        it.options.encoding = encoding
+    }
+    withType(GroovyCompile) {
+        it.groovyOptions.encoding = encoding
+        it.options.encoding = encoding
+    }
+}
+
