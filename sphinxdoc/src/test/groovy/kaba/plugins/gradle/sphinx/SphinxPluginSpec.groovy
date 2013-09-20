@@ -6,7 +6,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 import spock.lang.Unroll
 /**
- * {@link SphinxPlugin} のSpecクラス。
+ * {@link SphinxdocPlugin} のSpecクラス。
  *
  * @author Ryo TANAKA
  * @since 1.0
@@ -53,7 +53,7 @@ class SphinxPluginSpec extends Specification {
         project.apply(plugin: PLUGIN_NAME)
 
         then: "sphinxプラグインが適用され、"
-        project.plugins.findPlugin(PLUGIN_NAME) instanceof SphinxPlugin
+        project.plugins.findPlugin(PLUGIN_NAME) instanceof SphinxdocPlugin
 
         and: "規約オブジェクトがextensionsオブジェクトに追加されていること"
         project.extensions.findByName(EXTENSION_NAME) instanceof SphinxdocConvention
@@ -85,7 +85,7 @@ class SphinxPluginSpec extends Specification {
         }
 
         then: "規約プロパティはすべて設定値となっていること。"
-        SphinxdocConvention convention = project.plugins.getPlugin(SphinxPlugin).convention
+        SphinxdocConvention convention = project.plugins.getPlugin(SphinxdocPlugin).convention
         convention.is project.sphinxdoc
         convention.builder == conf.builder
         convention.outdir == "build/docs/sphinxdoc/${conf.builder}/"
@@ -116,10 +116,10 @@ class SphinxPluginSpec extends Specification {
         }
 
         then: "プラグインで保持する規約プロパティの値はそれぞれのプロジェクトで設定された値となっていること。"
-        SphinxdocConvention convention1 = sub1.plugins.findPlugin(SphinxPlugin).convention
+        SphinxdocConvention convention1 = sub1.plugins.findPlugin(SphinxdocPlugin).convention
         convention1.builder == 'sub1_builder'
 
-        SphinxdocConvention convention2 = sub2.plugins.findPlugin(SphinxPlugin).convention
+        SphinxdocConvention convention2 = sub2.plugins.findPlugin(SphinxdocPlugin).convention
         convention2.builder == 'sub2_builder'
     }
 

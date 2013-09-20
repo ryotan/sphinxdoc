@@ -71,7 +71,7 @@ import org.gradle.api.Project
  * @author Ryo TANAKA
  * @since 1.0
  */
-class SphinxPlugin implements Plugin<Project> {
+class SphinxdocPlugin implements Plugin<Project> {
 
     /**
      * プロジェクトのextensionsオブジェクトに追加する規約オブジェクトの名称
