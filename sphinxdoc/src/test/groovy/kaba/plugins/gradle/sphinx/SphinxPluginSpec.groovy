@@ -16,7 +16,7 @@ class SphinxPluginSpec extends Specification {
     /**
      * プラグイン名
      */
-    private static final String PLUGIN_NAME = 'sphinx'
+    private static final String PLUGIN_NAME = 'sphinxdoc'
 
     /**
      * extensionオブジェクト名
