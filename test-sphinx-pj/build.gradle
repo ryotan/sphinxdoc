@@ -1,0 +1,10 @@
+apply plugin: 'sphinxdoc'
+
+wrapper {
+    gradleVersion = '1.8'
+}
+
+sphinxdoc {
+    executable = '/usr/local/bin/sphinx-build'
+    outdir = 'build/build-test'
+}

@@ -1,0 +1,7 @@
+apply plugin: "groovy"
+
+// Gradleタスク実行前にkaba-gradle-pluginのテストを実行する必要はないので、mainのみ sourceSets に含める。
+sourceSets.main {
+    it.groovy.srcDirs = ["../../sphinxdoc/src/${it.name}/groovy/"]
+    it.resources.srcDirs = ["../../sphinxdoc/src/${it.name}/resources/"]
+}
