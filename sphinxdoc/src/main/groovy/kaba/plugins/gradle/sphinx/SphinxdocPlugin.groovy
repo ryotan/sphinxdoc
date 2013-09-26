@@ -141,6 +141,7 @@ class SphinxdocPlugin implements Plugin<Project> {
                 outdir = pj.file(this.convention.outdir)
                 settings = this.convention.settings
             }
+            task.buildArgs()
         }
         task
     }

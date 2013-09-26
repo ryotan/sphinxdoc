@@ -4,7 +4,6 @@ import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
 
 /**
  * Sphinxビルドを実行するタスク。
@@ -13,12 +12,6 @@ import org.gradle.api.tasks.TaskAction
  * @since 1.0
  */
 class Sphinxdoc extends Exec {
-
-    /**
-     * <code>sphinx-build</code>実行ファイルのパス
-     */
-    @Input
-    String executable
 
     /**
      * Sphinxドキュメントのルートディレクトリのパス（conf.pyのあるディレクトリ。）
@@ -50,23 +43,15 @@ class Sphinxdoc extends Exec {
     @Input
     Map<String, String> settings
 
-    @TaskAction
-    def build() {
-        args = buildArgs()
-        workingDir = root
-        execute()
-    }
-
-    List<String> buildArgs() {
-        def args = []
-        args << "-b"
-        args << "${builder}"
+    void buildArgs() {
+        args("-b")
+        args(builder)
         settings.each {
-            args << "-D"
-            args << "\"${key}\"=\"${value}\""
+            args("-D")
+            args("\"${key}\"=\"${value}\"")
         }
-        args << sourcedir.path
-        args << outdir.path
-        args
+        args(sourcedir.path)
+        args(outdir.path)
+        workingDir = root
     }
 }

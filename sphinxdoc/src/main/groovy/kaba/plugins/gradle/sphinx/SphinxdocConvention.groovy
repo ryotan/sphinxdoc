@@ -86,7 +86,7 @@ class SphinxdocConvention {
     /**
      * <code>conf.py</code>の設定を上書きする値 (なし)
      */
-    Map<String, String> settings = null
+    Map<String, String> settings = [:]
 
     String getOutdir() {
         outdir ?: "build/docs/sphinxdoc/${builder}/"
