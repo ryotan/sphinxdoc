@@ -11,17 +11,12 @@ import spock.lang.Unroll
  * @author Ryo TANAKA
  * @since 1.0
  */
-class SphinxPluginSpec extends Specification {
+class SphinxdocPluginSpec extends Specification {
 
     /**
      * プラグイン名
      */
     private static final String PLUGIN_NAME = 'sphinxdoc'
-
-    /**
-     * extensionオブジェクト名
-     */
-    private static final String EXTENSION_NAME = 'sphinxdoc'
 
     /**
      * extensionオブジェクト名
@@ -32,11 +27,12 @@ class SphinxPluginSpec extends Specification {
      * 規約プロパティのデフォルト値
      */
     private static final d = [
-        executable: 'sphinx-build',
+        exec: 'sphinx-build',
         builder: 'html',
-        sourcedir: 'source/',
-        outdir: 'build/docs/sphinxdoc/html/',
-        settings: null
+        source: 'source/',
+        out: 'build/docs/sphinxdoc/html/',
+        root: '.',
+        settings: [:]
     ].asImmutable()
 
     /**
@@ -44,27 +40,24 @@ class SphinxPluginSpec extends Specification {
      */
     Project project = ProjectBuilder.builder().build()
 
-    def "sphinxというプラグインとしてプロジェクトで利用できること。"() {
+    def "sphinxdocというプラグインとしてプロジェクトで利用できること。"() {
 
-        given: "プロジェクトにはsphinxプラグインが存在しない時に"
+        given: "プロジェクトにはsphinxdocプラグインが存在しない時に"
         assert !project.plugins.hasPlugin(PLUGIN_NAME)
 
-        when: "sphinxプラグインをapplyすると"
+        when: "sphinxdocプラグインをapplyすると"
         project.apply(plugin: PLUGIN_NAME)
 
-        then: "sphinxプラグインが適用され、"
+        then: "sphinxdocプラグインが適用されること"
         project.plugins.findPlugin(PLUGIN_NAME) instanceof SphinxdocPlugin
-
-        and: "規約オブジェクトがextensionsオブジェクトに追加されていること"
-        project.extensions.findByName(EXTENSION_NAME) instanceof SphinxdocConvention
     }
 
-    def "sphinxdocコードブロックが存在しない場合、規約プロパティはすべてデフォルト値となっていること"() {
+    def "sphinxdocコードブロックが存在しない場合、規約プロパティはすべてデフォルト値となっていること。"() {
 
-        given: "プロジェクトにはsphinxプラグインが存在しない時に"
+        given: "プロジェクトにはsphinxdocプラグインが存在しない時に"
         assert !project.plugins.hasPlugin(PLUGIN_NAME)
 
-        when: "sphinxプラグインをapplyする。"
+        when: "sphinxdocプラグインをapplyする。"
         project.apply(plugin: PLUGIN_NAME)
 
         then: "規約プロパティはすべてデフォルト値となっていること。"
@@ -76,7 +69,7 @@ class SphinxPluginSpec extends Specification {
     @Unroll
     def "sphinxdocコードブロックで、Sphinxビルドの規約プロパティを上書きできること。(#message)"() {
 
-        given: "プロジェクトにsphinxプラグインをapplyして"
+        given: "プロジェクトにsphinxdocプラグインをapplyして"
         project.apply(plugin: PLUGIN_NAME)
 
         when: "sphinxdocコードブロックで設定すると、"
@@ -84,24 +77,24 @@ class SphinxPluginSpec extends Specification {
             builder = conf.builder
         }
 
-        then: "規約プロパティはすべて設定値となっていること。"
-        SphinxdocConvention convention = project.plugins.getPlugin(SphinxdocPlugin).convention
-        convention.is project.sphinxdoc
-        convention.builder == conf.builder
-        convention.outdir == "build/docs/sphinxdoc/${conf.builder}/"
+        then: "規約プロパティが上書きされること。"
+        Sphinxdoc task = project.plugins.getPlugin(SphinxdocPlugin).task
+        task.is project.sphinxdoc
+        task.builder == conf.builder
+        task.out == "build/docs/sphinxdoc/${conf.builder}/"
 
         where:
         message | conf
         'builderが設定されていてoutdirが設定されていない場合、outdirがbuilderから導出されること。' | [builder: 'epub']
     }
 
-    def "複数のプロジェクトにapplyしても、それぞれのプロジェクトで独立した規約オブエジェクトをプラグインで保持していること。"() {
+    def "複数のプロジェクトにapplyしても、それぞれのプロジェクトで独立した規約オブジェクトをプラグインで保持していること。"() {
 
-        setup: "サブプロジェクト1にsphinxプラグインがapplyされていて、"
+        setup: "サブプロジェクト2にsphinxdocプラグインがapplyされていて、"
         Project sub1 = ProjectBuilder.builder().withParent(project).build()
         sub1.apply(plugin: PLUGIN_NAME)
 
-        and: "かつ、サブプロジェクト2にsphinxプラグインをapplyされている場合、"
+        and: "かつ、サブプロジェクト2にsphinxdocプラグインをapplyされている場合、"
         Project sub2 = ProjectBuilder.builder().withParent(project).build()
         sub2.apply(plugin: PLUGIN_NAME)
 
@@ -116,19 +109,21 @@ class SphinxPluginSpec extends Specification {
         }
 
         then: "プラグインで保持する規約プロパティの値はそれぞれのプロジェクトで設定された値となっていること。"
-        SphinxdocConvention convention1 = sub1.plugins.findPlugin(SphinxdocPlugin).convention
-        convention1.builder == 'sub1_builder'
+        Sphinxdoc task1 = sub1.plugins.findPlugin(SphinxdocPlugin).task
+        task1.builder == 'sub1_builder'
+        task1.out == 'build/docs/sphinxdoc/sub1_builder/'
 
-        SphinxdocConvention convention2 = sub2.plugins.findPlugin(SphinxdocPlugin).convention
-        convention2.builder == 'sub2_builder'
+        Sphinxdoc task2 = sub2.plugins.findPlugin(SphinxdocPlugin).task
+        task2.builder == 'sub2_builder'
+        task2.out == 'build/docs/sphinxdoc/sub2_builder/'
     }
 
-    def "sphinxプラグインをapplyすると、そのプロジェクトにsphinxdocタスクが追加されること。"() {
+    def "sphinxdocプラグインをapplyすると、そのプロジェクトにsphinxdocタスクが追加されること。"() {
 
-        given: "プロジェクトにはsphinxプラグインが存在しない時に"
+        given: "プロジェクトにはsphinxdocプラグインが存在しない時に"
         assert !project.plugins.hasPlugin(PLUGIN_NAME)
 
-        when: "sphinxプラグインをapplyすると、"
+        when: "sphinxdocプラグインをapplyすると、"
         project.apply(plugin: PLUGIN_NAME)
 
         then: "sphinxdocタスクが追加されていること。"
@@ -145,25 +140,28 @@ class SphinxPluginSpec extends Specification {
         // 相対パスとして解釈されることを検証するために、サブプロジェクトを利用して振舞いを検証する。
         Project sub = ProjectBuilder.builder().withParent(project).build()
 
-        given: "プロジェクトにはsphinxプラグインが存在しない時に"
+        given: "プロジェクトにはsphinxdocプラグインが存在しない時に"
         assert !sub.plugins.hasPlugin(PLUGIN_NAME)
 
-        when: "sphinxプラグインをapplyし、"
+        when: "sphinxdocプラグインをapplyし、"
         sub.apply(plugin: PLUGIN_NAME)
 
         and: "規約プロパティを設定すると、"
         sub.sphinxdoc {
-            if (conf.executable) {
-                executable = conf.executable
+            if (conf.exec) {
+                exec = conf.exec
             }
             if (conf.builder) {
                 builder = conf.builder
             }
-            if (conf.sourcedir) {
-                sourcedir = conf.sourcedir
+            if (conf.source) {
+                source= conf.source
             }
-            if (conf.outdir) {
-                outdir = conf.outdir
+            if (conf.out) {
+                out= conf.out
+            }
+            if (conf.root) {
+                root = conf.root
             }
             if (conf.settings) {
                 settings = conf.settings
@@ -174,26 +172,22 @@ class SphinxPluginSpec extends Specification {
 
         then: "sphinxdocタスクの設定値は、設定された値となること。"
         Sphinxdoc task = sub.tasks.findByName(TASK_NAME) as Sphinxdoc
-        task.executable == expected.executable
+        task.exec == expected.exec
         task.builder == expected.builder
         task.settings == expected.settings
+        task.source == expected.source
+        task.out == expected.out
+        task.root == expected.root
 
-        and: "ただし、ディレクトリは絶対パスまたはプロジェクトルートからの相対パスとして解釈されること。"
-        task.sourcedir == sub.file(expected.sourcedir)
-        task.outdir == sub.file(expected.outdir)
-
-        where:
+        where: "タスクの設定が正しく行われ、設定値とコマンドライン引数の間の変換処理も行われることを確認する。"
         message |
             conf |
             expected
         'デフォルト値の場合' |
             [:] |
             d
-        'すべて設定されている場合（絶対パス指定のディレクトリを含む）' |
-            [executable: '/usr/bin/sphinx-build', builder: 'epub', sourcedir: '.', outdir: '/var/sphinxdoc/build', settings: [title: 'title']] |
-            [executable: '/usr/bin/sphinx-build', builder: 'epub', sourcedir: '.', outdir: '/var/sphinxdoc/build', settings: [title: 'title']]
-        'builderが設定されていてoutdirが設定されていない場合、outdirがbuilderから導出されること。' |
-            [builder: 'epub'] |
-            [executable: d.executable, builder: 'epub', sourcedir: d.sourcedir, outdir: 'build/docs/sphinxdoc/epub', settings: d.settings]
+        'すべて設定されている場合' |
+            [exec: '/usr/bin/sphinx-build', builder: 'epub', source: '.', out: '/var/sphinxdoc/build', settings: [title: 'title'], root: '~/sphinxdoc'] |
+            [exec: '/usr/bin/sphinx-build', builder: 'epub', source: '.', out: '/var/sphinxdoc/build', settings: [title: 'title'], root: '~/sphinxdoc']
     }
 }

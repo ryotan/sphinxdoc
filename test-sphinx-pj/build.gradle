@@ -6,5 +6,6 @@ wrapper {
 
 sphinxdoc {
     executable = '/usr/local/bin/sphinx-build'
-    outdir = 'build/build-test'
+    out = 'build/build-test'
+    settings = [version: '1.3.0', release: '1.3.0 b1']
 }

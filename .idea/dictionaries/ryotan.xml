@@ -1,3 +1,9 @@
 <component name="ProjectDictionaryState">
-  <dictionary name="ryotan" />
+  <dictionary name="ryotan">
+    <words>
+      <w>epub</w>
+      <w>outdir</w>
+      <w>sourcedir</w>
+    </words>
+  </dictionary>
 </component>

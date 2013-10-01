@@ -8,5 +8,6 @@ import spock.lang.Specification
  * @author Ryo TANAKA
  * @since 1.0
  */
-class SphinxdocTest extends Specification {
+class SphinxdocSpec extends Specification {
+
 }
