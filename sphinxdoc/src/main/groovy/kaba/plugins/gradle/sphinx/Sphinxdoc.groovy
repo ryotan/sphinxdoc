@@ -124,7 +124,7 @@ class Sphinxdoc extends Exec {
      * @param project タスクを設定する対象の{@link Project}
      * @return 実行されるコマンドライン
      */
-    String configure() {
+    List<String> configure() {
         sourceFiles = project.file(source)
         outDir = project.file(getOut())
 
@@ -139,9 +139,6 @@ class Sphinxdoc extends Exec {
         }
         args(sourceFiles.path)
         args(outDir.path)
-        doLast {
-
-        }
         commandLine
     }
 }
