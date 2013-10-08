@@ -73,9 +73,20 @@ class Sphinxdoc extends Exec {
 
     /**
      * Sphinxドキュメントのルートディレクトリのパス（conf.pyのあるディレクトリ。）
+     * <p/>
+     * 指定されていない場合に、{@link #source}と同一のディレクトリを取得したい場合には、{@link #getRoot()}を利用すること。
      */
     @Input
-    String root = '.'
+    String root
+
+    /**
+     * Sphinxドキュメントのルートディレクトリのパス（conf.pyのあるディレクトリ）を返却する。
+     * <p/>
+     * 指定されていない場合には、{@link #source}と同一のディレクトリを返却する。
+     */
+    String getRoot() {
+        root ?: source
+    }
 
     /**
      * ソースディレクトリ
@@ -130,12 +141,11 @@ class Sphinxdoc extends Exec {
 
         // 実行するコマンドラインのセットアップ（Execの設定）。
         executable = exec
-        workingDir = project.file(root)
-        args("-b")
-        args(builder)
+        workingDir = project.file(getRoot())
+        args("-c", workingDir.path)
+        args("-b", builder)
         settings.each { key, value ->
-            args("-D")
-            args("${key}=${value}")
+            args("-D", "${key}=${value}")
         }
         args(sourceFiles.path)
         args(outDir.path)

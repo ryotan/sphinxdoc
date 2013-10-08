@@ -31,7 +31,7 @@ class SphinxdocPluginSpec extends Specification {
         builder: 'html',
         source: 'source/',
         out: 'build/docs/sphinxdoc/html/',
-        root: '.',
+        root: 'source/',
         settings: [:]
     ].asImmutable()
 
