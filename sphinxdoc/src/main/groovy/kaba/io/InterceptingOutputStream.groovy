@@ -1,4 +1,4 @@
-package kaba.plugins.gradle.sphinx.kaba.io
+package kaba.io
 
 /**
  * Intercepts output to underlying output stream and callbacks {@link Closure}.
@@ -28,7 +28,7 @@ class InterceptingOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Calls {@link #callback} with {@code b}, and when {@link #callback} returns {@code true},
+     * Calls {@link #callback} with {@code b} as an array, and when {@link #callback} returns {@code true},
      * send {@code b} to underlying output stream.
      *
      * @param     b  the <code>byte</code>.
@@ -37,7 +37,8 @@ class InterceptingOutputStream extends FilterOutputStream {
      */
     @Override
     void write(int b) throws IOException {
-        super.write(b)
+        callback.call([b] as byte[])
+        out.write(b)
     }
 
     /**
@@ -50,7 +51,8 @@ class InterceptingOutputStream extends FilterOutputStream {
      */
     @Override
     void write(byte[] b) throws IOException {
-        super.write(b)
+        callback.call(b)
+        out.write(b)
     }
 
     /**
@@ -70,6 +72,10 @@ class InterceptingOutputStream extends FilterOutputStream {
      */
     @Override
     void write(byte[] b, int off, int len) throws IOException {
-        super.write(b, off, len)
+        if ((off | len | b.length - (off + len)) < 0) {
+            throw new IndexOutOfBoundsException("Specified range is out of bounds. length:${b.length} off:${off} len:${len}")
+        }
+        callback.call(b[off..(off + len - 1)] as byte[])
+        out.write(b, off, len)
     }
 }
