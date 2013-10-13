@@ -149,4 +149,52 @@ class InterceptingOutputStreamTest extends Specification {
         message                | bytes                        | off | len | expected
         "byte array and range" | [0x00, 0x01, 0x02] as byte[] | 1   | 1   | [0x01]
     }
+
+    def "If callback closure returns false, nothing is sent to underlying stream (a byte)."() {
+        given:
+        def sut = new InterceptingOutputStream(under, notSendToUnder)
+
+        when:
+        sut.write(b)
+
+        then:
+        capture == expected
+        under.toByteArray() == []
+
+        where:
+        message | b    | expected
+        "byte"  | 0x00 | [0x00]
+    }
+
+    def "If callback closure returns false, nothing is sent to underlying stream (byte array)."() {
+        given:
+        def sut = new InterceptingOutputStream(under, notSendToUnder)
+
+        when:
+        sut.write(bytes)
+
+        then:
+        capture == expected
+        under.toByteArray() == []
+
+        where:
+        message      | bytes                        | expected
+        "byte array" | [0x00, 0x01, 0x02] as byte[] | [0x00, 0x01, 0x02]
+    }
+
+    def "If callback closure returns false, nothing is sent to underlying stream (byte array and range)."() {
+        given:
+        def sut = new InterceptingOutputStream(under, notSendToUnder)
+
+        when:
+        sut.write(bytes, off, len)
+
+        then:
+        capture == expected
+        under.toByteArray() == []
+
+        where:
+        message                | bytes                        | off | len | expected
+        "byte array and range" | [0x00, 0x01, 0x02] as byte[] | 1   | 1   | [0x01]
+    }
 }

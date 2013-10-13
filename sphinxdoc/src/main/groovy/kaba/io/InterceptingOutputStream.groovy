@@ -37,8 +37,9 @@ class InterceptingOutputStream extends FilterOutputStream {
      */
     @Override
     void write(int b) throws IOException {
-        callback.call([b] as byte[])
-        out.write(b)
+        if (callback.call([b] as byte[])) {
+            out.write(b)
+        }
     }
 
     /**
@@ -51,8 +52,9 @@ class InterceptingOutputStream extends FilterOutputStream {
      */
     @Override
     void write(byte[] b) throws IOException {
-        callback.call(b)
-        out.write(b)
+        if (callback.call(b)) {
+            out.write(b)
+        }
     }
 
     /**
@@ -75,7 +77,8 @@ class InterceptingOutputStream extends FilterOutputStream {
         if ((off | len | b.length - (off + len)) < 0) {
             throw new IndexOutOfBoundsException("Specified range is out of bounds. length:${b.length} off:${off} len:${len}")
         }
-        callback.call(b[off..(off + len - 1)] as byte[])
-        out.write(b, off, len)
+        if (callback.call(b[off..(off + len - 1)] as byte[])) {
+            out.write(b, off, len)
+        }
     }
 }
