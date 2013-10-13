@@ -70,7 +70,7 @@ class InterceptingOutputStreamTest extends Specification {
         sut.write(bytes, off, len)
 
         then:
-        capture == bytes[off..(off + len - 1)]
+        capture == expected
 
         where:
         message           | bytes                              | off | len | expected
@@ -100,5 +100,53 @@ class InterceptingOutputStreamTest extends Specification {
         "off is negative" | [0x00, 0x01] as byte[]       | -1  | 1
         "len is negative" | [0x00, 0x01] as byte[]       | 0   | -1
         "too long range"  | [0x00, 0x01, 0x02] as byte[] | 1   | 3
+    }
+
+    def "If callback closure returns true, sent byte should be sent to underlying output stream too."() {
+        given:
+        def sut = new InterceptingOutputStream(under, sendToUnder)
+
+        when:
+        sut.write(b)
+
+        then:
+        capture == expected
+        under.toByteArray() == expected
+
+        where:
+        message | b    | expected
+        "byte"  | 0x00 | [0x00]
+    }
+
+    def "If callback closure returns true, sent bytes should be sent to underlying output stream too."() {
+        given:
+        def sut = new InterceptingOutputStream(under, sendToUnder)
+
+        when:
+        sut.write(bytes)
+
+        then:
+        capture == expected
+        under.toByteArray() == expected
+
+        where:
+        message      | bytes                        | expected
+        "byte array" | [0x00, 0x01, 0x02] as byte[] | [0x00, 0x01, 0x02]
+    }
+
+    def "If callback closure returns true, sent bytes and off, len should be sent to underlying output stream too."() {
+        given:
+        def sut = new InterceptingOutputStream(under, sendToUnder)
+
+        when:
+        sut.write(bytes, off, len)
+
+        then:
+        capture == expected
+        under.toByteArray() == expected
+
+        where:
+        message                | bytes                        | off | len | expected
+        "byte array and range" | [0x00, 0x01, 0x02] as byte[] | 1   | 1   | [0x01]
     }
 }
