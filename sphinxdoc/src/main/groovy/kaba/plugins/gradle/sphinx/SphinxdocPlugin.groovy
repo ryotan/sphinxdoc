@@ -20,7 +20,7 @@ import org.gradle.api.Project
  * 規約プロパティは以下のように、<code>sphinxdoc</code>コードブロックを利用して設定することができる。
  * <pre>
  * sphinxdoc {
- *     exec = "${sphinx-exec}"
+ *     executable = "${sphinx-executable}"
  *     source     = '.'
  *     settings   = [version: '1.3.0b']
  * }
@@ -61,15 +61,9 @@ class SphinxdocPlugin implements Plugin<Project> {
      * @param project プラグインを適用するプロジェクト
      */
     private static Sphinxdoc createSphinxdocTask(Project project) {
-        Sphinxdoc task = project.task(
+        project.task(
             type: Sphinxdoc,
-            group: 'Documentation',
-            description: 'Builds Sphinx documentation.',
             TASK_NAME
         ) as Sphinxdoc
-        project.afterEvaluate {
-            task.configure()
-        }
-        task
     }
 }

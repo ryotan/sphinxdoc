@@ -27,7 +27,7 @@ class SphinxdocPluginSpec extends Specification {
      * 規約プロパティのデフォルト値
      */
     private static final d = [
-        exec: 'sphinx-build',
+        executable: 'sphinx-build',
         builder: 'html',
         source: 'source/',
         out: 'build/docs/sphinxdoc/html/',
@@ -148,8 +148,8 @@ class SphinxdocPluginSpec extends Specification {
 
         and: "規約プロパティを設定すると、"
         sub.sphinxdoc {
-            if (conf.exec) {
-                exec = conf.exec
+            if (conf.executable) {
+                executable = conf.executable
             }
             if (conf.builder) {
                 builder = conf.builder
@@ -172,7 +172,7 @@ class SphinxdocPluginSpec extends Specification {
 
         then: "sphinxdocタスクの設定値は、設定された値となること。"
         Sphinxdoc task = sub.tasks.findByName(TASK_NAME) as Sphinxdoc
-        task.exec == expected.exec
+        task.executable == expected.executable
         task.builder == expected.builder
         task.settings == expected.settings
         task.source == expected.source
@@ -187,7 +187,7 @@ class SphinxdocPluginSpec extends Specification {
             [:] |
             d
         'すべて設定されている場合' |
-            [exec: '/usr/bin/sphinx-build', builder: 'epub', source: '.', out: '/var/sphinxdoc/build', settings: [title: 'title'], root: '~/sphinxdoc'] |
-            [exec: '/usr/bin/sphinx-build', builder: 'epub', source: '.', out: '/var/sphinxdoc/build', settings: [title: 'title'], root: '~/sphinxdoc']
+            [executable: '/usr/bin/sphinx-build', builder: 'epub', source: '.', out: '/var/sphinxdoc/build', settings: [title: 'title'], root: '~/sphinxdoc'] |
+            [executable: '/usr/bin/sphinx-build', builder: 'epub', source: '.', out: '/var/sphinxdoc/build', settings: [title: 'title'], root: '~/sphinxdoc']
     }
 }

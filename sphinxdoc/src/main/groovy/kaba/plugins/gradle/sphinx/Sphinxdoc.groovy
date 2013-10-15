@@ -1,9 +1,12 @@
 package kaba.plugins.gradle.sphinx
+
+import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
 
 /**
  * Sphinxビルドを実行するタスク。
@@ -17,7 +20,7 @@ import org.gradle.api.tasks.OutputDirectory
  *         <th>対応するsphinx-build引数</th>
  *     </tr>
  *     <tr>
- *         <td><code>exec</code></td>
+ *         <td><code>executable</code></td>
  *         <td>Sphinxのビルド実行ファイル</td>
  *         <td><code>sphinx-build</code></td>
  *         <td>-</td>
@@ -57,13 +60,23 @@ import org.gradle.api.tasks.OutputDirectory
  * @author Ryo TANAKA
  * @since 1.0
  */
-class Sphinxdoc extends Exec {
+class Sphinxdoc extends DefaultTask {
+
+    /**
+     * タスクグループ
+     */
+    String group = 'Documentation'
+
+    /**
+     * タスクの概要
+     */
+    String description = 'Builds Sphinx documentation.'
 
     /**
      * <code>sphinx-build</code>実行ファイルのパス
      */
     @Input
-    String exec = 'sphinx-build'
+    String executable = 'sphinx-build'
 
     /**
      * Sphinxドキュメントのビルド形式
@@ -128,6 +141,33 @@ class Sphinxdoc extends Exec {
     Map<String, String> settings = [:]
 
     /**
+     * コマンドライン実行を移譲する {@link Exec}
+     */
+    Exec delegate
+
+    /**
+     * コンストラクタ
+     * <p/>
+     * プロジェクトの評価フェーズが完了した後に、UP-TO-DATEの判断用に
+     * {@link #sourceFiles} と {@link #outDir} に値を設定する。
+     */
+    Sphinxdoc() {
+        project.afterEvaluate {
+            sourceFiles = project.file(source)
+            outDir = project.file(getOut())
+        }
+    }
+
+    /**
+     * Sphinxドキュメントのビルドを実行する。
+     */
+    @TaskAction
+    void build() {
+        configure()
+        delegate.execute()
+    }
+
+    /**
      * {@link Exec}タスク用のコマンドラインをセットアップする。
      * <p/>
      * 規約プロパティとコマンドライン引数の対応は、{@link Sphinxdoc}を参照。
@@ -136,19 +176,18 @@ class Sphinxdoc extends Exec {
      * @return 実行されるコマンドライン
      */
     List<String> configure() {
-        sourceFiles = project.file(source)
-        outDir = project.file(getOut())
-
-        // 実行するコマンドラインのセットアップ（Execの設定）。
-        executable = exec
-        workingDir = project.file(getRoot())
-        args("-c", workingDir.path)
-        args("-b", builder)
-        settings.each { key, value ->
-            args("-D", "${key}=${value}")
-        }
-        args(sourceFiles.path)
-        args(outDir.path)
-        commandLine
+        delegate = project.task(type: Exec, "_sphinxdoc_build_internal${new Date().time}") {
+            // 実行するコマンドラインのセットアップ（Execの設定）。
+            executable = this.executable
+            workingDir = project.file(getRoot())
+            args("-c", workingDir.path)
+            args("-b", builder)
+            settings.each { key, value ->
+                args("-D", "${key}=${value}")
+            }
+            args(sourceFiles.path)
+            args(outDir.path)
+        } as Exec
+        delegate.commandLine
     }
 }
