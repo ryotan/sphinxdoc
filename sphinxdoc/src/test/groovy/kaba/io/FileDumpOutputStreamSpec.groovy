@@ -1,4 +1,5 @@
 package kaba.io
+
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
@@ -12,6 +13,7 @@ import java.nio.charset.Charset
  * @since 1.0
  */
 class FileDumpOutputStreamSpec extends Specification {
+
     @Rule
     TemporaryFolder tempFolder = new TemporaryFolder()
 

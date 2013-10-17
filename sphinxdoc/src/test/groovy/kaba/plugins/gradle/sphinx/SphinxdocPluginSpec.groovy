@@ -5,6 +5,7 @@ import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 import spock.lang.Unroll
+
 /**
  * {@link SphinxdocPlugin} のSpecクラス。
  *
@@ -61,7 +62,7 @@ class SphinxdocPluginSpec extends Specification {
         project.apply(plugin: PLUGIN_NAME)
 
         then: "規約プロパティはすべてデフォルト値となっていること。"
-        d.each {key, value ->
+        d.each { key, value ->
             assert project.sphinxdoc."${key}" == value
         }
     }
@@ -155,10 +156,10 @@ class SphinxdocPluginSpec extends Specification {
                 builder = conf.builder
             }
             if (conf.source) {
-                source= conf.source
+                source = conf.source
             }
             if (conf.out) {
-                out= conf.out
+                out = conf.out
             }
             if (conf.root) {
                 root = conf.root
