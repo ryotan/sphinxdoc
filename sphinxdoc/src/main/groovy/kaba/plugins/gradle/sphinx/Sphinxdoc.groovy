@@ -55,6 +55,18 @@ import org.gradle.api.tasks.TaskAction
  *         <td><code>[:]</code></td>
  *         <td><code>-D ${key}=${value}</code></td>
  *     </tr>
+ *     <tr>
+ *         <td><code>ignoreWarning</code></td>
+ *         <td>SphinxビルドでWARNINGが発生した際に、ビルドを失敗させるかどうか</td>
+ *         <td><code>true</code></td>
+ *         <td>-</td>
+ *     </tr>
+ *     <tr>
+ *         <td><code>logFile</code></td>
+ *         <td>Sphinxビルド時のログファイル（projectルートからの相対パス）</td>
+ *         <td><code>null</code></td>
+ *         <td>-</td>
+ *     </tr>
  * </table>
  *
  * @author Ryo TANAKA
