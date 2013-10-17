@@ -11,7 +11,7 @@ import java.nio.charset.Charset
  * @author Ryo TANAKA
  * @since 1.0
  */
-class FileDumpOutputStreamTest extends Specification {
+class FileDumpOutputStreamSpec extends Specification {
     @Rule
     TemporaryFolder tempFolder = new TemporaryFolder()
 

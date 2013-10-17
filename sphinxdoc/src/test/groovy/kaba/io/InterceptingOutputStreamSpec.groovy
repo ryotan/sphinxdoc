@@ -9,7 +9,7 @@ import spock.lang.Unroll
  * @author Ryo TANAKA
  * @since 1.0
  */
-class InterceptingOutputStreamTest extends Specification {
+class InterceptingOutputStreamSpec extends Specification {
 
     /**
      * underlying output stream
