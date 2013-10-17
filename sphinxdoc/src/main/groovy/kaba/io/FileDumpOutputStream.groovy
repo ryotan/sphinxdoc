@@ -9,16 +9,11 @@ package kaba.io
 class FileDumpOutputStream extends InterceptingOutputStream {
 
     /**
-     * Creates an output stream filter built on top of the specified
-     * underlying output stream.
-     * <p/>
-     * When some bytes are sent to this stream, {@link #callback} is called with that bytes.
-     * <p/>
-     * Then, if {@link #callback} returns {@code true}, that bytes will be sent to {@code out} too.
+     * 移譲先の {@link OutputStream} と出力先ファイルを指定して、
+     * {@link FileDumpOutputStream} を生成する。
      *
-     * @param out the underlying output stream to send bytes to.
-     * @param callback accepts a byte to be sent to {@code out} and returns a Boolean.
-     *                 If the return value is true, output will be sent to out, otherwise it will not.
+     * @param out 処理を移譲する {@link OutputStream}
+     * @param file 出力先ファイル
      */
     FileDumpOutputStream(OutputStream out, File file) {
         super(out, { byte[] bytes ->
