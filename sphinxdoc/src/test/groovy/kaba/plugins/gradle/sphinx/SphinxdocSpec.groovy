@@ -31,7 +31,10 @@ class SphinxdocSpec extends Specification {
 
     def "何も設定せずにconfigureを実行すると、デフォルト値でコマンドラインが構築されること。"() {
         Project pj = sut.project
-        expect:
+        when:
+        pj.evaluate()
+
+        then:
         sut.configure() == [
             d.executable,
             '-c', pj.file(d.source).path,
@@ -54,6 +57,7 @@ class SphinxdocSpec extends Specification {
 
         when:
         def pj = sut.project
+        pj.evaluate()
         def cmd = sut.configure()
 
         then:

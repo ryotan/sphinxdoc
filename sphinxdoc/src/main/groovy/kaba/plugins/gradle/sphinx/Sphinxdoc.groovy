@@ -1,7 +1,6 @@
 package kaba.plugins.gradle.sphinx
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
@@ -184,7 +183,6 @@ class Sphinxdoc extends DefaultTask {
      * <p/>
      * 規約プロパティとコマンドライン引数の対応は、{@link Sphinxdoc}を参照。
      *
-     * @param project タスクを設定する対象の{@link Project}
      * @return 実行されるコマンドライン
      */
     List<String> configure() {
