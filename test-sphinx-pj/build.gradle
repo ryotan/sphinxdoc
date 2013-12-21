@@ -1,7 +1,7 @@
 apply plugin: 'sphinxdoc'
 
 wrapper {
-    gradleVersion = '1.8'
+    gradleVersion = '1.10'
 }
 
 sphinxdoc {
