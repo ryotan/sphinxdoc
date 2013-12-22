@@ -10,4 +10,3 @@ tasks.with {
         it.options.encoding = encoding
     }
 }
-

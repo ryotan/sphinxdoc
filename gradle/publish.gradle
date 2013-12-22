@@ -1,0 +1,42 @@
+apply {
+    plugin 'maven-publish'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+def pomConfig = {
+    licenses {
+        license {
+            name "The MIT License (MIT)"
+            url "http://www.opensource.org/licenses/mit-license.php"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "ryotan"
+            name "Ryo Tanaka"
+            email "ryotan@ucb-jp.net"
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'A gradle plugin for building Sphinx documentations.')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}

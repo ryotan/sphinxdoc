@@ -1,5 +1,9 @@
+group = 'kaba.plugins.gradle'
+version = '0.1'
+
 apply {
     from script('groovy')
+    from script('publish')
 }
 
 dependencies {
